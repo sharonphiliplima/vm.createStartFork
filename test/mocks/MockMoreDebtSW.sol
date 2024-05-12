@@ -30,30 +30,30 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {MockV3Aggregator} from "./MockV3Aggregator.sol";
 
 /*
- * @title DecentralizedStableCoin
+ * @title StableWanCoin
  * @author Patrick Collins
  * Collateral: Exogenous
  * Minting (Stability Mechanism): Decentralized (Algorithmic)
  * Value (Relative Stability): Anchored (Pegged to USD)
  * Collateral Type: Crypto
  *
- * This is the contract meant to be owned by DSCEngine. It is a ERC20 token that can be minted and burned by the DSCEngine smart contract.
+ * This is the contract meant to be owned by SWEngine. It is a ERC20 token that can be minted and burned by the SWEngine smart contract.
  */
-contract MockMoreDebtDSC is ERC20Burnable, Ownable {
-    error DecentralizedStableCoin__AmountMustBeMoreThanZero();
-    error DecentralizedStableCoin__BurnAmountExceedsBalance();
-    error DecentralizedStableCoin__NotZeroAddress();
+contract MockMoreDebtSW is ERC20Burnable, Ownable {
+    error StableWanCoin__AmountMustBeMoreThanZero();
+    error StableWanCoin__BurnAmountExceedsBalance();
+    error StableWanCoin__NotZeroAddress();
 
     address mockAggregator;
 
     /*
     In future versions of OpenZeppelin contracts package, Ownable must be declared with an address of the contract owner as a parameter.
     For example:
-    constructor() ERC20("DecentralizedStableCoin", "DSC") Ownable(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266) {}
+    constructor() ERC20("StableWanCoin", "SW") Ownable(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266) {}
     Related code changes can be viewed in this commit:
     https://github.com/OpenZeppelin/openzeppelin-contracts/commit/13d5e0466a9855e9305119ed383e54fc913fdc60
     */
-    constructor(address _mockAggregator) ERC20("DecentralizedStableCoin", "DSC") {
+    constructor(address _mockAggregator) ERC20("StableWanCoin", "SW") {
         mockAggregator = _mockAggregator;
     }
 
@@ -62,20 +62,20 @@ contract MockMoreDebtDSC is ERC20Burnable, Ownable {
         MockV3Aggregator(mockAggregator).updateAnswer(0);
         uint256 balance = balanceOf(msg.sender);
         if (_amount <= 0) {
-            revert DecentralizedStableCoin__AmountMustBeMoreThanZero();
+            revert StableWanCoin__AmountMustBeMoreThanZero();
         }
         if (balance < _amount) {
-            revert DecentralizedStableCoin__BurnAmountExceedsBalance();
+            revert StableWanCoin__BurnAmountExceedsBalance();
         }
         super.burn(_amount);
     }
 
     function mint(address _to, uint256 _amount) external onlyOwner returns (bool) {
         if (_to == address(0)) {
-            revert DecentralizedStableCoin__NotZeroAddress();
+            revert StableWanCoin__NotZeroAddress();
         }
         if (_amount <= 0) {
-            revert DecentralizedStableCoin__AmountMustBeMoreThanZero();
+            revert StableWanCoin__AmountMustBeMoreThanZero();
         }
         _mint(_to, _amount);
         return true;
